@@ -1,0 +1,7 @@
+servingelect.sql
+*.xlsx
+*.docx
+*.DS_Store
+.env
+Datos Terceros.jpeg
+/writable
