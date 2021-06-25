@@ -28,5 +28,13 @@ class MaterialesModel extends Model{
         //print_r($this->getLastQuery()); //mostrar lo que ejecuta el query, luego en ver codigo fuente extraemos el select que se ejecuta
         return $datos;
     }
+
+    public function buscaMateriales($campo,$valor) {
+        $this->select('materiales.*');        
+        $this->like($campo, $valor);
+        $datos = $this->findAll();
+        return $datos;
+    }
+
 }
 

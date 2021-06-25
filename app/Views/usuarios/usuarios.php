@@ -35,9 +35,9 @@ $session = session();
                             <td><?php echo $dato['email']; ?></td>
                             <td><?php echo $dato['nombre_rol']; ?></td>
 
-                            <td style="height:0.2rem;width:1rem;"><input href="#" data-toggle="modal" data-target="#modalEditaUsuario" onclick="seleccionaUsuario(<?php echo $dato['id'] ?>);" type="image" src="<?php echo base_url(); ?>/image/edit.png" width="16" height="16" title="Editar Registro" <?php echo $editar; ?> ></input></td>
+                            <td style="height:0.2rem;width:1rem;"><input href="#" data-toggle="modal" data-target="#modalEditaUsuario" onclick="seleccionaUsuario(<?php echo $dato['id'] ?>);" type="image" src="<?php echo base_url(); ?>/image/edit.png" width="16" height="16" title="Editar Registro" <?php echo $editar; ?>></input></td>
 
-                            <td style="height:0.2rem;width:1rem;"><input href="#" data-href="<?php echo base_url() . '/usuarios/eliminar/' . $dato['id']; ?>" data-toggle="modal" data-target="#modal-confirma"  type="image" src="<?php echo base_url(); ?>/image/trash.png" width="16" height="16" title="Eliminar Registro" <?php echo $eliminar; ?> ></input></td>
+                            <td style="height:0.2rem;width:1rem;"><input href="#" data-href="<?php echo base_url() . '/usuarios/eliminar/' . $dato['id']; ?>" data-toggle="modal" data-target="#modal-confirma" type="image" src="<?php echo base_url(); ?>/image/trash.png" width="16" height="16" title="Eliminar Registro" <?php echo $eliminar; ?>></input></td>
 
                             </tr>
                         <?php } ?>
@@ -47,8 +47,8 @@ $session = session();
             </div>
         </div>
     </main>
-  <!-- Modal Edita Usuario-->
-        <form method="POST" action="<?php echo base_url(); ?>/usuarios/actualizar" class="form-block" enctype="multipart/form-data">
+    <!-- Modal Edita Usuario-->
+    <form method="POST" action="<?php echo base_url(); ?>/usuarios/actualizar" class="form-block" enctype="multipart/form-data">
         <div width="50%" class="modal fade" id="modalEditaUsuario" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
                 <div style="background: linear-gradient(90deg, #b4c1d9, #b4c1d9);" class="modal-content">
@@ -59,7 +59,7 @@ $session = session();
                         </button>
                     </div>
                     <div id="id_modal" class="modal-body">
-                    <input type="hidden" id="id_ed" name="id_ed" />
+                        <input type="hidden" id="id_ed" name="id_ed" />
                         <div style="background: linear-gradient(90deg, #b2b8bc, #dbddde);" class="card-body">
                             <div class="form-group col-12">
                                 <div class="row">
@@ -100,9 +100,9 @@ $session = session();
                     </div>
                 </div>
             </div>
-            </div>            
-        </form>
- 
+        </div>
+    </form>
+
 
     <!-- Modal Nuevo Usuario-->
     <div width="50%" class="modal fade" id="modalNuevoUsuario" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -168,6 +168,7 @@ $session = session();
             </div>
         </form>
     </div>
+    
     <!-- Modal -->
     <div class="modal fade" id="modal-confirma" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">

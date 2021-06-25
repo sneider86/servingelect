@@ -107,9 +107,9 @@
                                 <div class="row col-sm-12">
                                     <div class="col-md-5ths col-lg-5ths col-xs-6 col-sm-8">
                                         <label>Razón Social</label>
-                                        <input class="form-control form-control-sm" onKeyUp="mayus(this);" id="razon_social" name="razon_social" type="text" onblur="buscarRegistro('/clientes/buscarCliente/','Cliente')"></>
+                                        <input class="form-control form-control-sm" onKeyUp="mayus(this);" id="razon_social" name="razon_social" type="text" "></>
                                     </div>
-                                    <div class="col-md-5ths col-lg-5ths col-xs-6 col-sm-4">
+                                    <div class=" col-md-5ths col-lg-5ths col-xs-6 col-sm-4">
                                         <label>Fecha de Emisión</label>
                                         <input class="form-control form-control-sm" id="fecha" name="fecha" type="date"></>
                                     </div>
@@ -119,7 +119,7 @@
 
                                     <div class="col-md-5ths col-lg-5ths col-xs-6 col-sm-12">
                                         <label>Proyecto</label>
-                                        <input class="form-control form-control-sm" onKeyUp="mayus(this);" id="proyecto" name="proyecto" type="text"></>
+                                        <input class="form-control form-control-sm" id="proyecto" name="proyecto" type="text"></>
                                     </div>
 
                                 </div>
@@ -146,18 +146,20 @@
                 <table class="table table-bordered table-sm table-striped header_fijo" id="" width="100%" cellspacing="0">
                     <thead>
                         <tr style="color:#98040a;font-weight:300;text-align:center;font-family:Arial;font-size:14px;">
+                            <th hidden style="width:30px">Idx</th>
                             <th style="width:30px">#</th>
                             <th style="width:550px">Descripción</th>
                             <th style="width:50px">Detalle</th>
                             <th style="width:70px">Cnt</th>
                             <th style="width:120px">Precio</th>
                             <th style="width:120px">SubTotal</th>
-                            <th style="width:40px"> </th>
-                            <th style="width:40px"> </th>
+                            <th style="width:20px" colspan="2">Acción</th>
+
                         </tr>
                     </thead>
                     <tbody id="tbl_detalles" style="font-family:Arial;font-size:10px;">
                         <tr style="color:#98040a;font-weight:300;text-align:center;font-family:Arial;font-size:12px;">
+                            <td hidden id="1">1</td>
                             <td></td>
                             <td></td>
                             <td></td>
@@ -191,32 +193,93 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body">
-                    <div style="background: linear-gradient(90deg, #b2b8bc, #dbddde);" class="container-fluid">
-
-                        <form class="form">
-                            <div class="row col-md-12">
-                                <div class="table-responsive" style="width:100%; height:300px; overflow: scroll-verticall;">
-                                    <table class="table table-bordered table-sm table-striped header_fijo" id="" width="100%" cellspacing="0">
-                                        <thead>
-                                            <tr style="color:#98040a;font-weight:300;text-align:center;font-family:Arial;font-size:14px;">
-                                                <th style="width: 300px;">DESCRIPCION</th>
-                                                <th style="width:50px">UND</th>
-                                                <th style="width:60px">CANT</th>
-                                                <th style="width:20px">%</th>
-                                                <th style="width:120px">Vr.Unitario</th>
-                                                <th style="width:120px">Vr.Total</th>
-                                            </tr>
-                                        </thead>
-                                    </table>
+                <div id="id_modal" class="modal-body">
+                    <div style="background: linear-gradient(90deg, #b2b8bc, #dbddde);" class="container">
+                        <form>
+                            <div class="row">
+                                <div class="col-md-5ths col-lg-2">
+                                    <label>Tipo</label>
+                                    <select class="form-control form-control-sm" id="tipo" name="tipo" type="text" required>
+                                        <option value="">Seleccionar</option>
+                                        <?php foreach ($conceptos as $row) { ?>
+                                            <option value="<?php echo $row['id']; ?>"><?php echo $row['valor'] ?></option>
+                                        <?php } ?>
+                                    </select>
                                 </div>
+                                <div class="col-md-5ths col-lg-3">
+                                    <label>Descripción</label>
+                                    <div class="input-group">
+                                        <input class="form-control form-control-sm" id="mitem" name="mitem" type="text" required></>
+                                    </div>
+                                </div>
+                                <div class="col-lg-1">
+                                    <label>Und</label>
+                                    <div class="input-group">
+                                        <input disabled class="form-control form-control-sm" id="munidad" name="munidad" type="text" required></>
+                                    </div>
+                                </div>
+                                <div class="col-lg-1">
+                                    <label>CNT</label>
+                                    <div class="input-group">
+                                        <input class="form-control form-control-sm" id="mcantidad" name="mcantidad" type="text" required></>
+                                    </div>
+                                </div>
+                                <div class="col-lg-1">
+                                    <label>%</label>
+                                    <div class="input-group">
+                                        <input class="form-control form-control-sm" id="mporcentaje" name="mporcentaje" type="text" required></>
+                                    </div>
+                                </div>
+                                <div class="col-lg-2">
+                                    <label>Precio</label>
+                                    <div class="input-group">
+                                        <input class="form-control form-control-sm" id="mprecio" name="mprecio" type="text" required onblur="calculaSubtotal()"></>
+                                    </div>
+                                </div>
+                                <div class="col-lg-2">
+                                    <label>SubTotal</label>
+                                    <div class="input-group">
+                                        <input disabled class="form-control form-control-sm" id="msubtotal" name="msubtotal" type="text" required></>
+                                        <span class="input-group-btn ">
+                                            <button id="agregar_concepto" type="button" class="btn btn-success form-control-sm">+</span></button>
+                                        </span>
+                                    </div>
+                                </div>
+
                             </div>
+
                         </form>
+                        <div class="row col-md-12">
+                            <div class="table-responsive" style="width:100%; height:300px; overflow: scroll-verticall;">
+                                <table class="table table-bordered table-sm table-striped header_fijo" id="" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr style="color:#98040a;font-weight:300;text-align:center;font-family:Arial;font-size:14px;">
+                                            <th style="width:40px;">#</th>
+                                            <th style="width:300px;">DESCRIPCION</th>
+                                            <th style="width:50px">UND</th>
+                                            <th style="width:60px">CANT</th>
+                                            <th style="width:40px">%</th>
+                                            <th style="width:120px">Vr.Unitario</th>
+                                            <th style="width:120px">Vr.Total</th>
+                                            <th style="width:20px">Acción</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbl_item" style="font-family:Arial;font-size:10px;">
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
 
                     </div>
 
                 </div>
                 <div class="modal-footer">
+                    <div>
+                        <input style="text-align:right;" disabled class="form-control form-control-sm" id="total" name="total" type="text"></>
+                    </div>
                     <button id="ok_detalles" class="btn btn-primary" data-dismiss="modal">Aceptar</button>
                 </div>
             </div>
@@ -232,19 +295,19 @@
         var nodoTr = nodoTd.parentNode; //Nodo TR
         //var nodoContenedorForm = document.getElementById('contenedorForm'); //Nodo DIV
         var nodosEnTr = nodoTr.getElementsByTagName('td');
-        var item = nodosEnTr[0].textContent;
+        var id = nodosEnTr[0].textContent;
         var descripcion = nodosEnTr[1].textContent;
         //var unidad = nodosEnTr[2].textContent;
         var detalle = nodosEnTr[2].textContent;
         var cantidad = nodosEnTr[3].textContent;
         var precio = nodosEnTr[4].textContent;
         var subtotal = nodosEnTr[5].textContent;
-        var nuevoCodigoHtml = '<td><input disabled type="text" name="item" id="item" value="' + item + '" size="1"</td>' +
+        var nuevoCodigoHtml = '<td  hidden style="width:10px;" id="' + id + '" >' + id + '</td><td><input disabled type="text" name="item" id="item" value="' + "" + '" size="1"</td>' +
             '<td><textarea id="descripcion" name="descripcion" rows="2" cols="90"></textarea></td>' +
-            '<td style="text-align:center"><input class="checkbox" type="checkbox" name="detalle" id="detalle" size="2"</td>' +
-            '<td><input type="text" name="cantidad" id="cantidad" value="' + cantidad + '" size="6"</td>' +
-            '<td><input type="text" name="precio" id="precio" value="' + precio + '" size="12"</td>' +
-            '<td><input type="text" name="subtotal" id="subtotal" value="' + subtotal + '" size="12"</td><td><input onclick="guardarDetalle(this)" type="image" src="<?php echo base_url(); ?>/image/save.png" width="16" height="14" title="Guardar Registro"></input></td>' + '<td><input onclick="eliminararDetalle(this)" type="image" src="<?php echo base_url(); ?>/image/eliminar.png" width="20" height="18" title="Eliminar Registro"></input></td>';
+            '<td style="text-align:center"><input class="checkbox" type="checkbox" name="detalle" id="detalle" size="2"></td>' +
+            '<td><input type="text" name="cantidad" id="cantidad" value="' + cantidad + '" size="6" onblur="calculaSubtotalPrincipal()"></td>' +
+            '<td><input type="text" name="precio" id="precio" value="' + precio + '" size="12" onblur="calculaSubtotalPrincipal()"></td>' +
+            '<td><input disabled type="text" name="subtotal" id="subtotal" value="' + subtotal + '" size="12"></td><td><input onclick="guardarDetalle(this)" type="image" src="<?php echo base_url(); ?>/image/save.png" width="20" height="22" title="Guardar Registro"></input></td>' + '<td><input class="deletePpal" type="image" src="<?php echo base_url(); ?>/image/eliminar.png" width="20" height="22" title="Eliminar Registro"></input></td>';
         nodoTr.innerHTML = nuevoCodigoHtml;
 
         //} else {
@@ -263,12 +326,12 @@
         var id = nodosEnTr[0].textContent;
         var descripcion = nodosEnTr[1].textContent;
         var unidad = nodosEnTr[2].textContent;
-        var nuevoCodigoHtml = '<td><input type="text" name="item" id="item" value="' + id + '" size="1"></td>' +
-            '<td><textarea id="descripcion" name="descripcion" rows="1" cols="90"></textarea></td>' +
+        var nuevoCodigoHtml = '<td  hidden style="width:10px;" id=' + id + '>' + id + '</td><td><input type="text" name="item" id="item" value="' + "" + '" size="1"></td>' +
+            '<td><textarea  id="descripcion" name="descripcion" rows="1" cols="90"></textarea></td>' +
             '<td>' + '' + '</td>' +
             '<td>' + '' + '</td>' +
             '<td>' + '' + '</td>' +
-            '<td>' + '' + '</td>' + '<td><input onclick="guardarItem(this)" type="image" src="<?php echo base_url(); ?>/image/save.png" width="18" height="18" title="Guardar Registro"></input></td>' + '<td><input onclick="eliminararItem(this)" type="image" src="<?php echo base_url(); ?>/image/eliminar.png" width="20" height="18" title="Eliminar Registro"></input></td>';
+            '<td>' + '' + '</td>' + '<td><input onclick="guardarItem()" type="image" src="<?php echo base_url(); ?>/image/save.png" width="18" height="18" title="Guardar Registro"></input></td>' + '<td><input onclick="eliminarItem(this)" type="image" src="<?php echo base_url(); ?>/image/eliminar.png" width="20" height="18" title="Eliminar Registro"></input></td>';
         nodoTr.innerHTML = nuevoCodigoHtml;
 
         //editando = "false";
@@ -321,47 +384,153 @@
         evt.currentTarget.className += " active";
     };
 
-    $(function() {
-        $(document).on('change', '.checkbox', function() {
-            if (this.checked) {
-                $("#modalDetalles").modal("show");
-            };
+
+        function guardarItem() {
+            alert("as");
+        }
+
+    /*
+    document.getElementById("sel_banco").value = "";
+        document.getElementById("numero_cuenta").value = "";
+        document.getElementById("extension").value = "0";
+        document.getElementById("sel_tipoCta").value = "";
+        //document.getElementById("orden").value = "";
+        document.getElementById("sel_banco").focus();
+
+        cadena = "valor=" + valor +
+            "&extension=" + extension +
+            "&orden=" + orden +
+            "&tipo=" + tipo +
+            "&indicativo=" + indicativo;
+
+        $.ajax({
+            type: "POST",
+            url: "<?php echo base_url(); ?>/temporal/insertar/" + indicativo + "/" + valor + "/" + extension + "/" + orden + "/" + tipo + "/" + fecha + "/" + clave,
+            data: cadena,
+            success: function(r) {}
+        })
+        
+    };*/
+
+    function calculaSubtotalPrincipal() {
+        var precio = document.getElementById("precio").value;
+        var cantidad = document.getElementById("cantidad").value;
+        var subtotal = (parseFloat(cantidad) * parseFloat(precio));
+        document.getElementById("subtotal").value = subtotal;
+    };
+
+    function calculaSubtotal() {
+        var precio = document.getElementById("mprecio").value;
+        var cantidad = document.getElementById("mcantidad").value;
+        var porcentaje = document.getElementById("mporcentaje").value;
+        var subtotal = (parseFloat(cantidad) * parseFloat(precio)) * parseFloat(porcentaje);
+        document.getElementById("msubtotal").value = subtotal;
+    };
+
+    function calcula_total() {
+        var data = [];
+        $("td.sTotal").each(function() {
+            data.push(parseFloat($(this).text()));
         });
-        $('#ok_detalles').click(function() {
-            document.getElementById("cantidad").value = 100;
-            document.getElementById("precio").value = 1500;
-            document.getElementById("subtotal").value = document.getElementById("cantidad").value * document.getElementById("precio").value;
-        });
-        $('#sgte_Cte').click(function() {
-            document.getElementById("Apu").click();
-        });
-        $('#sgte_Apu').click(function() {
-            document.getElementById("Dapu").click();
-        });
-        $('#regresar_Apu').click(function() {
-            document.getElementById("defaultOpen").click();
-        });
-        $('#regresar_DApu').click(function() {
-            document.getElementById("Apu").click();
-        });
-        $("#razon_social").autocomplete({
-            source: "<?php echo base_url(); ?>/terceros/autocompleteData/" + 'razon_social',
-            minLength: 3,
-            select: function(event, ui) {
-                event.preventDefault();
-                $("#razon_social").val(ui.item.value);
-                $('#t_direccion').val(ui.item.numero_documento + '\n' + ui.item.direccion + '\n' + ui.item.municipio + ' - ' + ui.item.departamento);
-            }
-        });
-        $('#agregar_item').click(function() {
+        var suma = data.reduce(function(a, b) {
+            return a + b;
+        }, 0);
+        $("#total").val(suma);
+
+    };
+
+    $("#item").autocomplete({
+        source: "<?php echo base_url(); ?>/cotizaciones/autocompleteData/" + 'descripcion',
+        minLength: 3,
+        appendTo: "#id_modal", // ID del modal o body
+        select: function(event, ui) {
+            event.preventDefault();
+            $("#item").val(ui.item.value);
+            $("#unidad").val(ui.unidad_medida.value);
+        }
+    });
+    $(document).on('change', '.checkbox', function() {
+        if (this.checked) {
+            $("#modalDetalles").modal("show");
+        };
+    });
+    $('#ok_detalles').click(function() {
+        //document.getElementById("cantidad").value = 100;
+        document.getElementById("precio").value = document.getElementById("total").value;
+        $("#precio").attr("disabled", 'true');
+        $("#subtotal").attr("disabled", 'true');
+        $("#modalDetalles input").val("");
+        $("#modalDetalles select").val("");
+        $("#tbl_item tr").remove();
+        //$('#modalDetalles .close').click();
+
+    });
+    $(document).on('click', '.delete', function(event) {
+        event.preventDefault();
+        $(this).closest('tr').remove();
+        calcula_total();
+    });
+
+    $(document).on('click', '.deletePpal', function(event) {
+        event.preventDefault();
+        $(this).closest('tr').remove();
+    });
+
+    $('#sgte_Cte').click(function() {
+        document.getElementById("Apu").click();
+    });
+    $('#sgte_Apu').click(function() {
+        document.getElementById("Dapu").click();
+    });
+    $('#regresar_Apu').click(function() {
+        document.getElementById("defaultOpen").click();
+    });
+    $('#regresar_DApu').click(function() {
+        document.getElementById("Apu").click();
+    });
+    $("#razon_social").autocomplete({
+        source: "<?php echo base_url(); ?>/terceros/autocompleteData/" + 'razon_social',
+        minLength: 3,
+        select: function(event, ui) {
+            event.preventDefault();
+            $("#razon_social").val(ui.item.value);
+            $('#t_direccion').val(ui.item.numero_documento + '\n' + ui.item.direccion + '\n' + ui.item.municipio + ' - ' + ui.item.departamento);
+        }
+    });
+    $('#agregar_item').click(function() {
+        var nFila = $("#tbl_detalles tr").length + 1;
+        var _row = '';
+        _row += '<tr style="color:#98040a;font-weight:300;text-align:center;font-family:Arial;font-size:12px;"><td  hidden style="width:10px;" id="' + nFila + '" >' + nFila + '</td><td>' + '' + '</td><td>' + '' + '</td><td>' + '' + '</td><td>' + '' + '</td><td>' + '' + '</td><td>' + '' + '</td><td><input onclick="transformarEnEditableItem(this)" type="image" src="<?php echo base_url(); ?>/image/edit.png" width="16" height="14" title="Editar Registro"></input></td></tr>';
+        $('#tbl_detalles').append(_row);
+    });
+    $('#agregar_detalle').click(function() {
+        var nFila = $("#tbl_detalles tr").length + 1;
+        var _row = '';
+        _row += '<tr style="color:#98040a;font-weight:300;text-align:center;font-family:Arial;font-size:12px;"><td  hidden style="width:10px;" id="' + nFila + '">' + nFila + '</td><td>' + '' + '</td><td>' + '' + '</td><td style="text-align:center">' + `<input type="checkbox" >` + '</td><td>' + '' + '</td><td>' + '' + '</td><td>' + '' + '</td><td><input onclick="transformarEnEditable(this)" type="image" src="<?php echo base_url(); ?>/image/edit.png" width="16" height="14" title="Editar Registro"></input></td> </tr>';
+        $('#tbl_detalles').append(_row);
+    });
+
+    $('#agregar_concepto').click(function() {
+        var cod = document.getElementById("tipo").value;
+        if (cod != 0) {
+            var combo = document.getElementById("tipo");
+
+            var seleccionado = combo.options[combo.selectedIndex].text;
+            c_subtotal = parseFloat(document.getElementById("msubtotal").value);
             var _row = '';
-            _row += '<tr style="color:#98040a;font-weight:300;text-align:center;font-family:Arial;font-size:12px;"><td>' + '' + '</td><td>' + '' + '</td><td>' + '' + '</td><td>' + '' + '</td><td>' + '' + '</td><td>' + '' + '</td><td><input onclick="transformarEnEditableItem(this)" type="image" src="<?php echo base_url(); ?>/image/edit.png" width="16" height="14" title="Editar Registro"></input></td></tr>';
-            $('#tbl_detalles').append(_row);
-        });
-        $('#agregar_detalle').click(function() {
-            var _row = '';
-            _row += '<tr style="color:#98040a;font-weight:300;text-align:center;font-family:Arial;font-size:12px;"><td>' + '' + '</td><td>' + '' + '</td><td style="text-align:center">' + `<input type="checkbox" >` + '</td><td>' + '' + '</td><td>' + '' + '</td><td>' + '' + '</td><td><input onclick="transformarEnEditable(this)" type="image" src="<?php echo base_url(); ?>/image/edit.png" width="16" height="14" title="Editar Registro"></input></td> </tr>';
-            $('#tbl_detalles').append(_row);
-        });
+            _row += '<tr style="color:#98040a;font-weight:300;text-align:center;font-family:Arial;font-size:12px;"><td style="width:40px;">' + seleccionado + '</td><td style="width:300px;">' + document.getElementById("mitem").value + '</td><td style="width:50px;">' + document.getElementById("munidad").value + '</td><td style="width:60px;">' + document.getElementById("mcantidad").value + '</td><td style="width:40px;">' + document.getElementById("mporcentaje").value + '</td><td style="width:120px;">' + document.getElementById("mprecio").value + '</td><td class="sTotal" style="width:120px;">' + document.getElementById("msubtotal").value + '</td><td style="width:30px;"><input class="delete" type="image" src="<?php echo base_url(); ?>/image/eliminar.png" width="16" height="14" title="Eliminar Registro"></input></td> </tr>';
+            $('#tbl_item').append(_row);
+            calcula_total();
+            $("#mitem").val("");
+            $("#munidad").val("");
+            $("#mcantidad").val("");
+            $("#mprecio").val("");
+            $("#mporcentaje").val("");
+            $("#msubtotal").val("");
+        } else {
+            swal('Debe Seleccionar el Tipo. Corrija', '');
+            cod = document.getElementById("tipo").focus();
+        }
+
     });
 </script>

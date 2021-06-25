@@ -17,6 +17,7 @@ use App\Models\Correos_telefonosModel;
 use App\Models\EmpresasModel;
 use App\Models\PermisosModel;
 use App\Models\CotizacionesModel;
+use App\Models\MaterialesModel;
 
 
 class Cotizaciones extends BaseController
@@ -24,7 +25,7 @@ class Cotizaciones extends BaseController
     /*interactua el controlador con el modelo */
     protected $clientes, $roles, $modulos,$detalleparametros,$tipo_Cliente,$pais,$tipo_documento;
     protected $reglas, $reglasLogin, $reglasCambia, $reglasActualiza,$departamentos,$municipios;
-    protected $terceros,$temporal,$correos_telefonos,$empresas,$permisos,$cotizaciones;
+    protected $terceros,$temporal,$correos_telefonos,$empresas,$permisos,$cotizaciones,$materiales;
 
     public function __construct()
     {
@@ -42,6 +43,7 @@ class Cotizaciones extends BaseController
         $this->empresas = new EmpresasModel();
         $this->permisos = new PermisosModel();
         $this->cotizaciones = new CotizacionesModel();
+        $this->materiales = new MaterialesModel();
     }
 
     public function index($activo = 1)
@@ -128,6 +130,7 @@ class Cotizaciones extends BaseController
     {               
         $tipo_Cliente = $this->detalleparametros->buscarDetalleParametros('Tipo de Cliente'); 
         $tipo_documento = $this->detalleparametros->buscarDetalleParametros('Tipo de Documento'); 
+        $conceptos = $this->detalleparametros->buscarDetalleParametros('Conceptos para Plantillas APU'); 
         $pais = $this->pais->where('activo', 1)->findAll();
         //$departamentos = $this->departamentos->where('activo', 1)->findAll();
         //$municipios = $this->municipios->where('activo', 1)->findAll();
@@ -135,8 +138,9 @@ class Cotizaciones extends BaseController
         $modulos = $this->modulos->buscar_modulos(1);
         $where = " activo = 1 order by razon_social"; 
         $terceros = $this->terceros->where($where)->findAll(); 
+        $materiales = $this->materiales->where('activo', 1)->findAll(); 
         $u_medida = $this->detalleparametros->buscarDetalleParametros('Unidad de Medida');
-        $data = ['titulo' => 'DATOS DE LA COTIZACION', 'roles' => $roles, 'modulos' => $modulos, 'tipo_documento' => $tipo_documento, 'tipo_Cliente' => $tipo_Cliente, 'pais' => $pais, 'terceros' => $terceros, 'u_medida' => $u_medida];
+        $data = ['titulo' => 'DATOS DE LA COTIZACION', 'roles' => $roles, 'modulos' => $modulos, 'tipo_documento' => $tipo_documento, 'tipo_Cliente' => $tipo_Cliente, 'pais' => $pais, 'terceros' => $terceros, 'u_medida' => $u_medida, 'conceptos' => $conceptos, 'materiales' => $materiales];
 
         echo view('header', $data);
         echo view('cotizaciones/nuevo', $data);
@@ -343,6 +347,23 @@ class Cotizaciones extends BaseController
         echo view('header',$data);
         echo view('/clientes/verClientes_pdf',$data);
         echo view('footer');
+    }
+
+
+    public function autocompleteData($campo)
+    {
+        $returnData = array();
+        $valor = $this->request->getGet('term'); 
+        $materiales = $this->materiales->buscaMateriales($campo, $valor);
+        if (!empty($materiales)) {
+            foreach ($materiales as $row) {
+                $data['id'] = $row['id_material'];
+                $data['item'] = $row['descripcion'];
+                $data['label'] = $row['descripcion'];
+                array_push($returnData, $data); 
+            }
+        }
+        echo json_encode($returnData);
     }
 
     function reporteClientesPdf()

@@ -38,25 +38,25 @@
     };
 
     function buscarRegistro(ruta, registro) {
-	id = document.getElementById("id").value;
-	if (id != 0) {
-		$.ajax({
-			type: "PATH",
-			url: "<?php echo base_url(); ?>" + ruta + id,
-			dataType: "json",
-			success: function(r) {
-				console.log(r[0]["id_tercero"]);
-				if (r[0]["id_tercero"] == id) {
-					swal('', 'Ya Existe un Registro de ' + registro + ' para este Tercero', 'error');
-					$("#id").val("");
-					$("#numero_documento").val("");
-					$("#razon_social").val("");
-					$("#razon_social").focus();
-				}
-			}
-		})
-	}
-}
+        id = document.getElementById("id").value;
+        if (id != 0) {
+            $.ajax({
+                type: "PATH",
+                url: "<?php echo base_url(); ?>" + ruta + id,
+                dataType: "json",
+                success: function(r) {
+                    console.log(r[0]["id_tercero"]);
+                    if (r[0]["id_tercero"] == id) {
+                        swal('', 'Ya Existe un Registro de ' + registro + ' para este Tercero', 'error');
+                        $("#id").val("");
+                        $("#numero_documento").val("");
+                        $("#razon_social").val("");
+                        $("#razon_social").focus();
+                    }
+                }
+            })
+        }
+    };
 
     function recargarGrupos($campo1, $campo2, $ruta) {
         $.ajax({

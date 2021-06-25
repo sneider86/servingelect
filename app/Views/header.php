@@ -1,6 +1,7 @@
 <?php
 // definimos una variable de sesion para obtener los datos de mi sesion y mostrar el nombre del usuario al lado del icono de
 $user_session = session();
+$password = $user_session->password;
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -42,8 +43,8 @@ $user_session = session();
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" id="userDropdown" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><?php echo $user_session->nombres; ?> <i class="fas fa-user fa-fw"></i></a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
-                    <a class="dropdown-item" href="<?php echo base_url(); ?>/usuarios/">Cambiar Contraseña</a>
-                    <a class="dropdown-item" href="#">Log de Actividad</a>
+                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#modalCambiaPassword">Cambiar Contraseña</a>
+                    <!--<a class="dropdown-item" href="#">Log de Actividad</a>-->
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="<?php echo base_url(); ?>/usuarios/logout">Cerrar Sesión</a>
                 </div>
@@ -88,4 +89,102 @@ $user_session = session();
             </nav>
         </div>
 
+        <!-- Modal Nuevo Usuario-->
+        <div width="50%" class="modal fade" id="modalCambiaPassword" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <form method="post" action="<?php echo base_url(); ?>/usuarios/cambiaClave" class="form-block" enctype="multipart/form-data">
+                <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+                    <div style="background: linear-gradient(90deg, #b4c1d9, #b4c1d9);" class="modal-content">
+                        <div class="modal-header">
+                            <h5 style="color:#98040a;font-size:20px;font-weight:bold;" class="modal-title" id="exampleModalLabel">Cambiar Contraseña</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div id="id_modal" class="modal-body">
+                            <div style="background: linear-gradient(90deg, #b2b8bc, #dbddde);" class="card-body">
+                                <div class="form-group col-12">
+                                    <div class="row">
+                                        <input hidden id="id" name="id" type="text" value="<?php echo $user_session->id_usuario; ?>"></>
+                                        <div class="col-12 col-sm-6">
+                                            <label>Usuario</label>
+                                            <input disabled class="form-control form-control-sm" id="c_usuario" name="c_usuario" type="text" value="<?php echo $user_session->usuario; ?>" autofocus></>
+                                        </div>
+                                        <div class="col-12 col-sm-6">
+                                            <label>Nombres y Apellidos</label>
+                                            <input disabled class="form-control form-control-sm" id="c_nombres" name="c_nombres" type="text" value="<?php echo $user_session->nombres; ?>"></>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12 col-sm-6">
+                                            <label>Contraseña Anterior</label>
+                                            <input class="form-control form-control-sm" id="password_Anterior" name="password_Anterior" type="password" onblur="verificaAnterior()"></>
+                                        </div>
+
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12 col-sm-6">
+                                            <label>Nueva Contraseña</label>
+                                            <input disabled class="form-control form-control-sm" id="password_nuevo" name="password_nuevo" type="password" value=""></>
+                                        </div>
+                                        <div class="col-12 col-sm-6">
+                                            <label>Repetir Contraseña</label>
+                                            <input disabled class="form-control form-control-sm" id="repite_password" name="repite_password" type="password" onblur="verificaNueva()"></>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <a id="btn_cerrarModal" class="btn btn-primary form-control-sm" >Regresar</a>
+                            <button disabled id="btn_cambiar" type="submit" class="btn btn-success form-control-sm">Cambiar</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
 </body>
+<script>
+    function verificaAnterior() {
+        var clave = document.getElementById('password_Anterior').value;
+        var id = document.getElementById('id').value;
+        $.ajax({
+            type: "PATH",
+            url: "<?php echo base_url(); ?>/usuarios/verificaUsuario/" + id + '/' + clave,
+            dataType: "json",
+            success: function(r) {
+                if (r != 'ok') {
+                    swal('', 'Contraseña no Valida. Corrija', 'error');
+                    $('#password_Anterior').val('');
+                    $('#password_Anterior').focus();
+                } else {
+                    $('#password_nuevo').removeAttr('disabled');
+                    $('#repite_password').removeAttr('disabled');
+                    $('#password_nuevo').focus();
+                }
+            },
+            error: function() {
+                console.log("No se ha podido obtener la Información");
+            }
+        })
+    };
+
+    function verificaNueva() {
+        var clave_nueva = document.getElementById('password_nuevo').value;
+        var clave_rnueva = document.getElementById('repite_password').value;
+        if (clave_nueva != clave_rnueva) {
+            swal('', 'Contraseñas no Coinciden. Corrija', 'error');
+            $('#password_nuevo').val('');
+            $('#repite_password').val('');
+            $('#password_nuevo').focus();
+        } else {
+            $('#btn_cambiar').removeAttr('disabled');
+            $('#btn_cambiar').focus();
+        }
+    }
+
+    $('#btn_cerrarModal').click(function() {
+        $("#modalCambiaPassword .close").click();
+    });
+
+</script>

@@ -214,6 +214,10 @@ class Usuarios extends BaseController
         echo view('usuarios/editar', $data);
         echo view('footer');
     }
+
+
+
+
     public function actualizar()
     {
         if ($this->request->getMethod() == "post" ) {
@@ -257,7 +261,7 @@ class Usuarios extends BaseController
             $datosUsuario = $this->usuarios->where('usuario', $usuario)->first(); //consulta    
 
             if ($datosUsuario != null) {
-                //if (password_verify($password, $datosUsuario['password'])) {  //verificamos el password que sed trae en la consulta con el que oingresa el usuario
+                if (password_verify($password, $datosUsuario['password'])) {  //verificamos el password que se trae en la consulta con el que ingresa el usuario
                 $datosRol = $this->roles->where('id', $datosUsuario['id_rol'])->first();
                 $datosSesion = [ //creamos la variable dee sesion en modo arreglo
                     'id_usuario' => $datosUsuario['id'],
@@ -271,10 +275,10 @@ class Usuarios extends BaseController
                 $session->set($datosSesion); //y a la nueva $session le asignamos el arreglo $datosSesion y ya nos crearia las variables de sesion para poder trabajar
                 //return redirect()->to(base_url() . '/usuarios');   // debemos redireccionar a la vista principal o a la que decidamos
                 return redirect()->to(base_url() . '/principal');
-                //} else {
-                //    $data['error'] = "Contraseña Equivocada. Intentalo Nuevamente";
-                //    echo view('login', $data); //$data=informacion que se envia, o sea el mensaje de error
-                //}
+                } else {
+                    $data['error'] = "Contraseña Equivocada. Inténtalo Nuevamente";
+                    echo view('login', $data); //$data=informacion que se envia, o sea el mensaje de error
+                }
             } else {
                 $data['error'] = "El Usurio: " . $usuario . " no Existe.";
                 echo view('login', $data);
@@ -330,6 +334,19 @@ class Usuarios extends BaseController
         }
     }
 
+    public function cambiaClave()
+    {
+        if ($this->request->getMethod() == "post" ) {
+            $hash = password_hash($this->request->getPost('password_nuevo'), PASSWORD_DEFAULT);
+            $this->usuarios->update($this->request->getPost('id'), [
+                'password' => $hash
+            ]);
+            return redirect()->to(base_url() . '/principal' );
+        } else {
+            //return $this->editar($this->request->getPost('id'), $this->validator);
+            return redirect()->to(base_url() . '/principal');
+        }
+    }
     public function buscarUsuario($id)
     {
         $returnData = array();
@@ -339,4 +356,19 @@ class Usuarios extends BaseController
         }
         echo json_encode($returnData);
     }
+
+    public function verificaUsuario($id,$clave)
+    {
+        $returnData = array();
+        $usuarios = $this->usuarios->presentarUsuario($id);
+
+        if (!empty($usuarios)) {
+            if (password_verify($clave, $usuarios['password'])) {
+                $returnData='ok';
+            } else {
+                $returnData='error';
+            }
+        }
+        echo json_encode($returnData);
+    }    
 }
